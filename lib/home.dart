@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
               }
 
               if (snapshot.hasError) {
-                return const Text("Failed to load data");
+                return const Center(child: Text("Failed to load data"));
               }
             }
 
