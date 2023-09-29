@@ -32,14 +32,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: ListView.builder(itemBuilder: (context, i) {
-        return ListTile(
-          title: Text("title"),
-          subtitle: Text("subtitle"),
-          leading: Icon(Icons.person),
-        );
-      }),
+      appBar: AppBar(
+        elevation: 0,
+      ),
+      body: ListView.builder(
+          itemCount: 5,
+          itemBuilder: (context, i) {
+            return ListTile(
+              title: Text("title"),
+              subtitle: Text("subtitle"),
+              leading: Icon(Icons.person),
+            );
+          }),
     );
   }
 }
