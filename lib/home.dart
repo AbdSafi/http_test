@@ -9,22 +9,25 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-//
+
 class _MyHomePageState extends State<MyHomePage> {
   String url = "https://jsonplaceholder.typicode.com/users";
 
-  bool loading = false;
+  bool loading = true;
   List user = [];
 
   requestAPI() async {
     print('==============================');
-    loading = true;
-    setState(() {});
-    var request = await http.get(Uri.parse(url));
-    var response = jsonDecode(request.body);
-    user.addAll(response);
-    loading = false;
-    setState(() {});
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      user.addAll(data);
+      loading = false;
+      setState(() {});
+    } else {
+      throw Exception("Failed to load");
+    }
   }
 
   @override
