@@ -13,27 +13,15 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String url = "https://jsonplaceholder.typicode.com/users";
 
-  bool loading = true;
-  List user = [];
-
-  requestAPI() async {
+  Future<List> fetchUsers() async {
     print('==============================');
     final response = await http.get(Uri.parse(url));
-
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      user.addAll(data);
-      loading = false;
-      setState(() {});
+      return data;
     } else {
       throw Exception("Failed to load");
     }
-  }
-
-  @override
-  void initState() {
-    requestAPI();
-    super.initState();
   }
 
   @override
@@ -42,11 +30,41 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         elevation: 0,
       ),
-      body: loading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
+      body: FutureBuilder<List>(
+          future: fetchUsers(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, i) {
+                      return ListTile(
+                        title: Text("name: ${snapshot.data![i]["username"]}"),
+                        subtitle: Text(
+                            "geo: ${snapshot.data![i]["address"]["geo"]["lat"]}"),
+                        leading: const Icon(Icons.person),
+                      );
+                    });
+              }
+
+              if (snapshot.hasError) {
+                return const Text("Failed to load data");
+              }
+            }
+
+            return const Center(child: Text("Failed to load the data"));
+          }),
+    );
+  }
+}
+
+/*ListView.builder(
               itemCount: user.length,
               itemBuilder: (context, i) {
                 return ListTile(
@@ -54,7 +72,4 @@ class _MyHomePageState extends State<MyHomePage> {
                   subtitle: Text("geo: ${user[i]["address"]["geo"]["lat"]}"),
                   leading: const Icon(Icons.person),
                 );
-              }),
-    );
-  }
-}
+              }),*/
