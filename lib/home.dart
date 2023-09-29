@@ -13,19 +13,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String url = "https://jsonplaceholder.typicode.com/users";
 
-  List lstUser = [];
+  bool loading = false;
+  List user = [];
 
-  getData() async {
-    var response = await http.get(Uri.parse(url));
-    var data = jsonDecode(response.body);
-    lstUser.addAll(data);
+  requestAPI() async {
     print('==============================');
-    print(lstUser[0]);
+    loading = true;
+    setState(() {});
+    var request = await http.get(Uri.parse(url));
+    var response = jsonDecode(request.body);
+    user.addAll(response);
+    loading = false;
+    setState(() {});
   }
 
   @override
   void initState() {
-    getData();
+    requestAPI();
     super.initState();
   }
 
@@ -35,15 +39,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         elevation: 0,
       ),
-      body: ListView.builder(
-          itemCount: 5,
-          itemBuilder: (context, i) {
-            return ListTile(
-              title: Text("title"),
-              subtitle: Text("subtitle"),
-              leading: Icon(Icons.person),
-            );
-          }),
+      body: loading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              itemCount: user.length,
+              itemBuilder: (context, i) {
+                return ListTile(
+                  title: Text("name: ${user[i]["username"]}"),
+                  subtitle: Text("geo: ${user[i]["address"]["geo"]["lat"]}"),
+                  leading: const Icon(Icons.person),
+                );
+              }),
     );
   }
 }
