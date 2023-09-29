@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_test/details.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -44,11 +45,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, i) {
-                      return ListTile(
-                        title: Text("name: ${snapshot.data![i]["username"]}"),
-                        subtitle: Text(
-                            "geo: ${snapshot.data![i]["address"]["geo"]["lat"]}"),
-                        leading: const Icon(Icons.person),
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DetailsPage(data: snapshot.data![i]),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          title: Text("name: ${snapshot.data![i]["username"]}"),
+                          subtitle: Text(
+                              "email: ${snapshot.data![i]["email"]}"),
+                          leading: const Icon(Icons.person),
+                        ),
                       );
                     });
               }
