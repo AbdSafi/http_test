@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_test/details.dart';
+import 'package:http_test/model/user.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -14,12 +14,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String url = "https://jsonplaceholder.typicode.com/users";
 
-  Future<List> fetchUsers() async {
+  Future<List<Users>> fetchUsers() async {
     print('==============================');
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return data;
+      final List<dynamic> data = json.decode(response.body);
+
+      return data.map((json) => Users.fromJson(json)).toList();
     } else {
       throw Exception("Failed to load");
     }
@@ -31,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         elevation: 0,
       ),
-      body: FutureBuilder<List>(
+      body: FutureBuilder<List<Users>>(
           future: fetchUsers(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -42,22 +43,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
+                final List<Users>? myUser = snapshot.data;
                 return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, i) {
                       return InkWell(
                         onTap: () {
-                          Navigator.of(context).push(
+                          /* Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
                                   DetailsPage(data: snapshot.data![i]),
                             ),
-                          );
+                          );*/
                         },
                         child: ListTile(
-                          title: Text("name: ${snapshot.data![i]["username"]}"),
+                          title: Text("name: ${myUser![i].name}"),
                           subtitle: Text(
-                              "email: ${snapshot.data![i]["email"]}"),
+                              "email: ${myUser[i].email}  || address: ${myUser[i].address.city}"),
                           leading: const Icon(Icons.person),
                         ),
                       );

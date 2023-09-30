@@ -10,6 +10,18 @@ class Users {
 
   Users(this.id, this.name, this.username, this.email, this.address, this.phone,
       this.website, this.company);
+
+  factory Users.fromJson(Map<String, dynamic> json) {
+    return Users(
+        json['id'],
+        json['name'],
+        json['username'],
+        json['email'],
+        Address.fromJson(json['address']),
+        json['phone'],
+        json['website'],
+        Company.fromJson(json['company']));
+  }
 }
 
 class Address {
@@ -20,6 +32,16 @@ class Address {
   late final Geo geo;
 
   Address(this.street, this.suite, this.city, this.zipcode, this.geo);
+
+  factory Address.fromJson(Map<String, dynamic> json) {
+    return Address(
+      json['street'],
+      json['suite'],
+      json['city'],
+      json['zipcode'],
+      Geo.fromJson(json['geo']),
+    );
+  }
 }
 
 class Geo {
@@ -27,6 +49,13 @@ class Geo {
   late final String lng;
 
   Geo(this.lat, this.lng);
+
+  factory Geo.fromJson(Map<String, dynamic> json) {
+    return Geo(
+      json['lat'],
+      json['lng'],
+    );
+  }
 }
 
 class Company {
@@ -35,4 +64,12 @@ class Company {
   late final String bs;
 
   Company(this.name, this.catchPhrase, this.bs);
+
+  factory Company.fromJson(Map<String, dynamic> json) {
+    return Company(
+      json['name'],
+      json['catchPhrase'],
+      json['bs'],
+    );
+  }
 }
