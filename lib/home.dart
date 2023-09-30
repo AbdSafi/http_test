@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_test/model/user.dart';
+import 'package:http_test/notify.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -26,6 +28,32 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _handleMessage(RemoteMessage message) {
+    if (message.data['type'] == 'notify') {
+      String? title = message.notification!.title;
+      String? body = message.notification!.body;
+      String? img = message.data['img'];
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  FetchNotify(title: title!, body: body!, img: img!)));
+    }
+  }
+
+  fetchToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    print("=================================================");
+    print("$fcmToken");
+  }
+
+  @override
+  void initState() {
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+    fetchToken();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
               if (snapshot.hasData) {
                 final List<Users>? myUser = snapshot.data;
                 return ListView.builder(
-                    itemCount: snapshot.data!.length,
+                    itemCount: myUser!.length,
                     itemBuilder: (context, i) {
                       return InkWell(
                         onTap: () {
