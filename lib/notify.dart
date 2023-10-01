@@ -7,7 +7,7 @@ class FetchNotify extends StatefulWidget {
   final String title;
   final String body;
   final String img;
-
+//
   @override
   State<FetchNotify> createState() => _FetchNotifyState();
 }
