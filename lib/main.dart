@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:http_test/test_image.dart';
 
 import 'home.dart';
 
@@ -31,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         // useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const TestImage(),
       routes: {
         "home": (context) => const MyHomePage(),
       },
